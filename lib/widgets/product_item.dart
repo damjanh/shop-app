@@ -24,9 +24,12 @@ class ProductItem extends StatelessWidget {
           icon: Icon(Icons.shopping_cart),
           onPressed: () {},
         ),
-        title: Text(
-          title,
-          textAlign: TextAlign.center,
+        title: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+          ),
         ),
         backgroundColor: Colors.black54,
       ),

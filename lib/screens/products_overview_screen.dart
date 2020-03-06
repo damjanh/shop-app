@@ -46,12 +46,12 @@ class ProductsOverviewScreen extends StatelessWidget {
         title: Text('Products'),
       ),
       body: GridView.builder(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(5),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           childAspectRatio: 1.5,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
+          crossAxisSpacing: 5,
+          mainAxisSpacing: 5,
         ),
         itemBuilder: (context, index) {
           final product = products[index];
