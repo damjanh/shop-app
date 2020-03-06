@@ -8,7 +8,7 @@ class Product {
   final String imageUrl;
   bool isFavorite;
 
-  Product.name(
+  Product(
       {@required this.id,
       @required this.title,
       @required this.description,
