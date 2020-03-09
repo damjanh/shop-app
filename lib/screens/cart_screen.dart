@@ -5,6 +5,7 @@ import '../providers/cart_provider.dart';
 
 class CartScreen extends StatelessWidget {
   static const routeName = '/cart';
+
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
@@ -28,7 +29,14 @@ class CartScreen extends StatelessWidget {
                     width: 10,
                   ),
                   Chip(
-                    label: Text('\$${cartProvider.totalAmount}'),
+                    label: Text(
+                      '\$${cartProvider.totalAmount}',
+                      style: TextStyle(
+                          color: Theme.of(context)
+                              .primaryTextTheme
+                              .headline6
+                              .color),
+                    ),
                     backgroundColor: Theme.of(context).primaryColor,
                   ),
                 ],
