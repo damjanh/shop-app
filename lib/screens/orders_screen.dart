@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/orders.dart';
+import '../widgets/order_item.dart';
 
 class OrdersScreen extends StatelessWidget {
   static const routeName = '/orders';
@@ -16,7 +17,7 @@ class OrdersScreen extends StatelessWidget {
       body: ListView.builder(
         itemBuilder: (context, index) {
           final orderItem = ordersProvider.orders[index];
-          return Text(orderItem.id);
+          return OrderItem(order: orderItem);
         },
         itemCount: ordersProvider.orders.length,
       ),
