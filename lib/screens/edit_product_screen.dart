@@ -20,6 +20,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   _updateImageUrl() {
     if (!_imageUrlFocusNode.hasFocus) {
+      if ((!_imageUrlController.text.startsWith('http') &&
+              !_imageUrlController.text.startsWith('https')) ||
+          (!_imageUrlController.text.endsWith('.png') &&
+              !_imageUrlController.text.endsWith('jpg') &&
+              !_imageUrlController.text.endsWith('jpeg'))) {
+        return;
+      }
       setState(() {
         // Rebuild the screen
       });
@@ -27,7 +34,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   _saveForm() {
-    _form.currentState.save();
+    final isValid = _form.currentState.validate();
+    if (isValid) {
+      _form.currentState.save();
+    }
   }
 
   @override
@@ -68,6 +78,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Title'),
                   textInputAction: TextInputAction.next,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please provide a value!';
+                    }
+                    return null;
+                  },
                   onFieldSubmitted: (_) {
                     FocusScope.of(context).requestFocus(_priceFocusNode);
                   },
@@ -82,6 +98,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Price'),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please provide a value!';
+                    }
+                    if (double.tryParse(value) == null) {
+                      return 'Please provide a valid numner!';
+                    }
+                    if (double.parse(value) <= 0) {
+                      return 'Please provide a number greater than zero!';
+                    }
+                    return null;
+                  },
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.number,
                   focusNode: _priceFocusNode,
@@ -100,6 +128,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Description'),
                   keyboardType: TextInputType.multiline,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please provide a description!';
+                    }
+                    if (value.length < 10) {
+                      return 'Please enter a longer description!';
+                    }
+                    return null;
+                  },
                   maxLines: 3,
                   focusNode: _descriptionFocusNode,
                   onFieldSubmitted: (_) {
@@ -144,6 +181,21 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         decoration: InputDecoration(labelText: 'Image URL'),
                         keyboardType: TextInputType.url,
                         textInputAction: TextInputAction.done,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter an image url!';
+                          }
+                          if (!value.startsWith('http') &&
+                              !value.startsWith('https')) {
+                            return 'Please enter a valid image url!';
+                          }
+                          if (!value.endsWith('.png') &&
+                              !value.endsWith('.jpg') &&
+                              !value.endsWith('.jpeg')) {
+                            return 'Please enter a valid image url!';
+                          }
+                          return null;
+                        },
                         controller: _imageUrlController,
                         focusNode: _imageUrlFocusNode,
                         onFieldSubmitted: (_) {
