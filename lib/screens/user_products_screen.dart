@@ -32,7 +32,9 @@ class UserProductsScreen extends StatelessWidget {
             itemBuilder: (_, index) {
               final product = productsData.products[index];
               return UserProductItem(
-                  title: product.title, imageUrl: product.imageUrl);
+                  id: product.id,
+                  title: product.title,
+                  imageUrl: product.imageUrl);
             }),
       ),
     );
