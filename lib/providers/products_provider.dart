@@ -59,7 +59,14 @@ class ProductsProvider with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
-  void updateProduct(String id, Product newProduct) {
+  Future<void> updateProduct(String id, Product newProduct) async {
+    final url = 'https://shop-app-3aaff.firebaseio.com/products/$id.json';
+    await http.patch(url, body: json.encode({
+      'title': newProduct.title,
+      'description': newProduct.description,
+      'imageUrl': newProduct.imageUrl,
+      'price': newProduct.price
+    }));
     final index = _items.indexWhere((element) => element.id == id);
     _items[index] = newProduct;
     notifyListeners();

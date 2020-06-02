@@ -53,11 +53,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
       });
     }
     if (_editedProduct.id != null) {
-      Provider.of<ProductsProvider>(context, listen: false)
+      await Provider.of<ProductsProvider>(context, listen: false)
           .updateProduct(_editedProduct.id, _editedProduct);
-      setState(() {
-        _isLoading = false;
-      });
+      Navigator.of(context).pop();
     } else {
       try {
         await Provider.of<ProductsProvider>(context, listen: false)
@@ -78,12 +76,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 )
               ]),
         );
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
       }
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
