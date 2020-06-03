@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/providers/products_provider.dart';
@@ -13,6 +14,7 @@ class UserProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scafold = Scaffold.of(context);
     return Column(
       children: <Widget>[
         ListTile(
@@ -26,7 +28,8 @@ class UserProductItem extends StatelessWidget {
               children: <Widget>[
                 IconButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed(EditProductScreen.routeName, arguments: id);
+                    Navigator.of(context)
+                        .pushNamed(EditProductScreen.routeName, arguments: id);
                   },
                   icon: Icon(
                     Icons.edit,
@@ -34,8 +37,21 @@ class UserProductItem extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {
-                    Provider.of<ProductsProvider>(context, listen: false).deleteProduct(id);
+                  onPressed: () async {
+                    try {
+                      await Provider.of<ProductsProvider>(context,
+                              listen: false)
+                          .deleteProduct(id);
+                    } catch (error) {
+                      scafold.showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Deleting failed!',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    }
                   },
                   icon: Icon(
                     Icons.delete,
