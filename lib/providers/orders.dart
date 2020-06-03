@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:shop/models/http_exception.dart';
 
 import '../models/cart_item.dart';
 
@@ -6,7 +10,7 @@ class Order {
   final String id;
   final double amount;
   final List<CartItem> products;
-  final DateTime dateTime;
+  final String dateTime;
 
   Order(
       {@required this.id,
@@ -22,14 +26,34 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
-  void addOrder(List<CartItem> cartProducts, double total) {
-    _orders.insert(
-        0,
-        Order(
-            id: DateTime.now().toString(),
-            amount: total,
-            dateTime: DateTime.now(),
-            products: cartProducts));
-    notifyListeners();
+  Future<void> addOrder(List<CartItem> cartProducts, double total) async {
+    const url = 'https://shop-app-3aaff.firebaseio.com/orders.json';
+    final timestamp = DateTime.now().toIso8601String();
+    try {
+      final response = await http.post(url,
+          body: json.encode({
+            'amount': total,
+            'dateTime': timestamp,
+            'products': cartProducts
+                .map((e) => {
+                      'id': e.id,
+                      'title': e.title,
+                      'quantity': e.quantity,
+                      'price': e.price,
+                    })
+                .toList()
+          }));
+
+      _orders.insert(
+          0,
+          Order(
+              id: json.decode(response.body)['name'],
+              amount: total,
+              dateTime: timestamp,
+              products: cartProducts));
+      notifyListeners();
+    } catch (error) {
+      throw HttpException('Could not add order!');
+    }
   }
 }
