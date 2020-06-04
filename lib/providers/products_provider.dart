@@ -8,8 +8,9 @@ import 'product.dart';
 
 class ProductsProvider with ChangeNotifier {
   final String authToken;
+  final String userId;
 
-  ProductsProvider(this.authToken, this._items);
+  ProductsProvider(this.authToken, this.userId, this._items);
 
   List<Product> _items = [];
 
@@ -22,20 +23,23 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    final url = 'https://shop-app-3aaff.firebaseio.com/products.json?auth=$authToken';
+    var url = 'https://shop-app-3aaff.firebaseio.com/products.json?auth=$authToken';
     final response = await http.get(url);
     final data = json.decode(response.body) as Map<String, dynamic>;
     final List<Product> products = [];
     if (data == null) {
       return;
     }
+    url = 'https://shop-app-3aaff.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
+    final favoritesResponse = await http.get(url);
+    final favoritesData = json.decode(favoritesResponse.body) as Map<String, dynamic>;
     data.forEach((key, value) {
       products.add(Product(
           id: key,
           title: value['title'],
           description: value['description'],
           price: value['price'],
-          isFavorite: value['isFavorite'],
+          isFavorite: favoritesData == null ? false : favoritesData[key] ?? false,
           imageUrl: value['imageUrl']));
     });
     _items = products;
@@ -50,7 +54,6 @@ class ProductsProvider with ChangeNotifier {
           'description': value.description,
           'imageUrl': value.imageUrl,
           'price': value.price,
-          'isFavorite': value.isFavorite
         }));
 
     final newProduct = Product(

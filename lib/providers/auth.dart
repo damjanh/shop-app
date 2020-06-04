@@ -20,6 +20,10 @@ class Auth with ChangeNotifier {
     return null;
   }
 
+  String get userId {
+    return _userId;
+  }
+
   Future<void> signUp(String email, String password) async {
     const url = "signUp";
     const key = "AIzaSyAa0sDY2O6AN-se1imE0FPXKVSLV05kNhs";
