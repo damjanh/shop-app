@@ -9,6 +9,17 @@ class Auth with ChangeNotifier {
   DateTime _expiryDate;
   String _userId;
 
+  bool get isAuth {
+    return token != null;
+  }
+
+  String get token {
+    if (_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null) {
+      return _token;
+    }
+    return null;
+  }
+
   Future<void> signUp(String email, String password) async {
     const url = "signUp";
     const key = "AIzaSyAa0sDY2O6AN-se1imE0FPXKVSLV05kNhs";
@@ -35,8 +46,12 @@ class Auth with ChangeNotifier {
       final responseData = json.decode(response.body);
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
-
       }
+      _token = responseData['idToken'];
+      _userId = responseData['localId'];
+      final expiresIn = responseData['expiresIn'];
+      _expiryDate = DateTime.now().add(Duration(seconds: int.parse(expiresIn)));
+      notifyListeners();
     } catch (error) {
       throw error;
     }
