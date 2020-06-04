@@ -7,6 +7,10 @@ import 'package:shop/models/http_exception.dart';
 import 'product.dart';
 
 class ProductsProvider with ChangeNotifier {
+  final String authToken;
+
+  ProductsProvider(this.authToken, this._items);
+
   List<Product> _items = [];
 
   List<Product> get products {
@@ -18,7 +22,7 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    const url = 'https://shop-app-3aaff.firebaseio.com/products.json';
+    final url = 'https://shop-app-3aaff.firebaseio.com/products.json?auth=$authToken';
     final response = await http.get(url);
     final data = json.decode(response.body) as Map<String, dynamic>;
     final List<Product> products = [];
@@ -39,7 +43,7 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> addProduct(Product value) async {
-    const url = 'https://shop-app-3aaff.firebaseio.com/products.json';
+    final url = 'https://shop-app-3aaff.firebaseio.com/products.json?auth=$authToken';
     var response = await http.post(url,
         body: json.encode({
           'title': value.title,
@@ -64,7 +68,7 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> updateProduct(String id, Product newProduct) async {
-    final url = 'https://shop-app-3aaff.firebaseio.com/products/$id.json';
+    final url = 'https://shop-app-3aaff.firebaseio.com/products/$id.json?auth=$authToken';
     await http.patch(url,
         body: json.encode({
           'title': newProduct.title,
@@ -78,7 +82,7 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final url = 'https://shop-app-3aaff.firebaseio.com/products/$id.json';
+    final url = 'https://shop-app-3aaff.firebaseio.com/products/$id.json?auth=$authToken';
     final existingProductIndex =
         _items.indexWhere((element) => element.id == id);
     var existingProduct = _items[existingProductIndex];
